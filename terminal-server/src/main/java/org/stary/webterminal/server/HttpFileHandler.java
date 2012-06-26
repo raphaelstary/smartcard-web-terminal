@@ -130,6 +130,7 @@ public class HttpFileHandler extends SimpleChannelUpstreamHandler {
         if ("/applet.jar".equals(uri)) {
             uri = uri.replace('/', File.separatorChar);
             return System.getProperty("user.dir") + File.separator + "smartcard-connector" + File.separator + "target" + File.separator + APPLET_JAR;
+
         } else {
             uri = uri.replace('/', File.separatorChar);
             return System.getProperty("user.dir") + File.separator + "resources" + uri;

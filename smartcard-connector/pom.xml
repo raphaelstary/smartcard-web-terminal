@@ -18,10 +18,6 @@
     <name>smartcard-connector</name>
     <url>http://maven.apache.org</url>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -49,25 +45,25 @@
                 </executions>
             </plugin>
 
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-jarsigner-plugin</artifactId>-->
-                <!--<version>1.2</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>sign</id>-->
-                        <!--<goals>-->
-                            <!--<goal>sign</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<keystore>keystore</keystore>-->
-                    <!--<alias>keyalias</alias>-->
-                    <!--<storepass>storepass</storepass>-->
-                    <!--<keypass>keypass</keypass>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>sign</id>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <keystore>src/main/resources/applet.keystore</keystore>
+                    <alias>signApplets</alias>
+                    <storepass>applet_storepass</storepass>
+                    <keypass>applet_keypass</keypass>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>
