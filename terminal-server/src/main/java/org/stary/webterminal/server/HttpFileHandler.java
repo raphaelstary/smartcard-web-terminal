@@ -8,6 +8,8 @@ import org.jboss.netty.util.CharsetUtil;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,6 +21,8 @@ import java.util.TimeZone;
  * @author raphael
  */
 public class HttpFileHandler extends SimpleChannelUpstreamHandler {
+
+    private static final String APPLET_JAR = "smartcard-connector-0.1-SNAPSHOT-jar-with-dependencies.jar";
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws IOException {
@@ -35,6 +39,7 @@ public class HttpFileHandler extends SimpleChannelUpstreamHandler {
             sendError(ctx, HttpResponseStatus.FORBIDDEN);
             return;
         }
+
 
         File file = new File(path);
         if (file.isHidden() || !file.exists()) {
@@ -62,11 +67,9 @@ public class HttpFileHandler extends SimpleChannelUpstreamHandler {
         setContentTypeHeader(response, file);
         setDateHeaders(response);
 
-        Channel channel = ctx.getChannel(); //event.getChannel();
+        Channel channel = event.getChannel();
 
         channel.write(response);
-//        ctx.getChannel();
-
 
         final FileRegion region = new DefaultFileRegion(raf.getChannel(), 0, fileLength);
         ChannelFuture writeFuture = channel.write(region);
@@ -121,14 +124,24 @@ public class HttpFileHandler extends SimpleChannelUpstreamHandler {
             }
         }
 
-        uri = uri.replace('/', File.separatorChar);
+        if ("/".equals(uri))
+            uri = "/connect.html";
 
-        return System.getProperty("user.dir") + File.separator + uri;
+        if ("/applet.jar".equals(uri)) {
+            uri = uri.replace('/', File.separatorChar);
+            return System.getProperty("user.dir") + File.separator + "smartcard-connector" + File.separator + "target" + File.separator + APPLET_JAR;
+        } else {
+            uri = uri.replace('/', File.separatorChar);
+            return System.getProperty("user.dir") + File.separator + "resources" + uri;
+        }
     }
 
     private static void setContentTypeHeader(HttpResponse response, File file) {
-        MimetypesFileTypeMap map = new MimetypesFileTypeMap();
-        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, map.getContentType(file.getPath()));
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String type = fileNameMap.getContentTypeFor(file.getPath());
+        if (type == null)
+            type = "application/x-java-applet;version=1.7";
+        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, type);
     }
 
     private static void setDateHeaders(HttpResponse response) {

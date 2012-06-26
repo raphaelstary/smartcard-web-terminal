@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PC/SC connector</title>
+</head>
+<body>
+
+<script src="http://www.java.com/js/deployJava.js"></script>
+
+<script>
+    var attributes = {
+        code:'org.stary.webterminal.connector.PCSCConnector',
+        archive:'applet.jar',
+        width:500,
+        height:100
+    };
+    var parameters = {codebase_lookup:'true'};
+    deployJava.runApplet(attributes, parameters, '1.7');
+</script>
+
+<h1>Welcome</h1>
+</body>
+</html>
