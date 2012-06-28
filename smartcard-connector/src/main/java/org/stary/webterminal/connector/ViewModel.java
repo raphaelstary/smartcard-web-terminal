@@ -7,7 +7,7 @@ public class ViewModel {
     private PcscClient client;
 
     public void connect(String host, String port) {
-        client = new PcscClient(host, Integer.getInteger(port));
+        client = new PcscClient(host, Integer.parseInt(port));
         client.run();
     }
 
