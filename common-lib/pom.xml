@@ -11,17 +11,9 @@
     </parent>
 
     <groupId>org.stary</groupId>
-    <artifactId>terminal-server</artifactId>
+    <artifactId>common-lib</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>terminal-server</name>
+    <name>common-lib</name>
     <url>http://maven.apache.org</url>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.stary</groupId>
-            <artifactId>common-lib</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
 </project>

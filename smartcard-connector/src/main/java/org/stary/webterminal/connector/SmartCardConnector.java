@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PCSCConnector extends JApplet {
+public class SmartCardConnector extends JApplet {
 
     private List<String> readerList;
+    private ViewModel model;
+    private GuiPanel view;
 
     @Override
     public void init() {
@@ -27,6 +29,9 @@ public class PCSCConnector extends JApplet {
     }
 
     private void createGUI() {
-        setContentPane(new GuiPanel(readerList));
+        model = new ViewModel();
+        view = new GuiPanel(readerList, model);
+
+        setContentPane(view);
     }
 }

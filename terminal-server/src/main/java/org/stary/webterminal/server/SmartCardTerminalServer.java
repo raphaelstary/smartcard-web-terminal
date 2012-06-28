@@ -1,55 +1,65 @@
 package org.stary.webterminal.server;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
-import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
-import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
-import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 /**
  * @author raphael
  */
 public class SmartCardTerminalServer {
     private final int httpPort;
+    private final int tcpPort;
 
-    public SmartCardTerminalServer(int httpPort) {
+    private static final Logger logger = Logger.getLogger(SmartCardTerminalServer.class.getName());
+
+    static final ChannelGroup allChannels = new DefaultChannelGroup("pcsc-server");
+
+    public SmartCardTerminalServer(int httpPort, int tcpPort) {
         this.httpPort = httpPort;
+        this.tcpPort = tcpPort;
     }
 
     public void run() {
         ServerBootstrap bootstrap = new ServerBootstrap(
                 new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
 
-        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-            @Override
-            public ChannelPipeline getPipeline() throws Exception {
-                ChannelPipeline pipeline = Channels.pipeline();
-
-                pipeline.addLast("decoder", new HttpRequestDecoder());
-                pipeline.addLast("aggregator", new HttpChunkAggregator(65536));
-                pipeline.addLast("encoder", new HttpResponseEncoder());
-                pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
-
-                pipeline.addLast("handler", new HttpFileHandler());
-
-                return pipeline;
-            }
-        });
+        bootstrap.setPipelineFactory(new HttpFilePipelineFactory());
 
         bootstrap.bind(new InetSocketAddress(httpPort));
+
+
+        ServerBootstrap tcpBootstrap = new ServerBootstrap(
+                new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+
+        tcpBootstrap.setPipelineFactory(new PcscServerPipelineFactory());
+
+        tcpBootstrap.bind(new InetSocketAddress(tcpPort));
+        logger.info("server started");
+    }
+
+    public void send(int channelId, byte[] msg) {
+        ChannelBuffer buffer = ChannelBuffers.buffer(msg.length+1);
+        buffer.writeByte(msg.length);
+        buffer.writeBytes(msg);
+
+        allChannels.find(channelId).write(buffer);
     }
 
     public static void main(String[] args) {
-        if (args.length > 0)
-            new SmartCardTerminalServer(Integer.parseInt(args[0])).run();
+        if (args.length > 1)
+            new SmartCardTerminalServer(Integer.parseInt(args[0]), Integer.parseInt(args[1])).run();
         else
-            new SmartCardTerminalServer(8080).run();
+            new SmartCardTerminalServer(8080, 8088).run();
     }
 }

@@ -8,15 +8,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author xsr
+ * @author raphael
  */
-public class GuiPanel extends JPanel {
+public class GuiPanel extends JPanel implements ActionListener {
 
     private static final String reader_lbl = "Reader: ";
     private static final String host_lbl = "Server: ";
     private static final String port_lbl = "Port: ";
     private static final String connect_btn = "Connect";
     private static final String disconnect_btn = "Disconnect";
+
+    private final ViewModel model;
 
     private JComboBox<String> readerList;
 
@@ -30,8 +32,11 @@ public class GuiPanel extends JPanel {
     private JButton connect;
     private JButton disconnect;
 
-    public GuiPanel(List<String> availableReader) {
+    public GuiPanel(List<String> availableReader, ViewModel model) {
         super(new GridBagLayout());
+
+        this.model = model;
+
         GridBagConstraints constraints = new GridBagConstraints();
 
         readerList = new JComboBox<String>((String[]) availableReader.toArray());
@@ -87,23 +92,9 @@ public class GuiPanel extends JPanel {
         connect = new JButton(connect_btn);
         disconnect = new JButton(disconnect_btn);
 
-        connect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (connect.isVisible() && connect.isEnabled()) {
-                    //todo do this n that
-                }
-            }
-        });
+        connect.addActionListener(this);
 
-        disconnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (disconnect.isVisible() && disconnect.isEnabled()) {
-                    //todo do this n that
-                }
-            }
-        });
+        disconnect.addActionListener(this);
 
         constraints.gridx = 0;
         constraints.gridy = 4;
@@ -117,4 +108,12 @@ public class GuiPanel extends JPanel {
         add(disconnect, constraints);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        if (connect.equals(event.getSource()))
+            model.connect(host.getText(), port.getText());
+
+        if (disconnect.equals(event.getSource()))
+            model.disconnect();
+    }
 }
