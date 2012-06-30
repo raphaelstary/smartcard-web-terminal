@@ -16,7 +16,7 @@ public class ByteHeaderFrameDecoder extends FrameDecoder {
                             ChannelBuffer buf) throws Exception {
 
         // Make sure if the length field was received.
-        if (buf.readableBytes() < 4) {
+        if (buf.readableBytes() < 1) {
             // The length field was not received yet - return null.
             // This method will be invoked again when more packets are
             // received and appended to the buffer.
@@ -32,7 +32,7 @@ public class ByteHeaderFrameDecoder extends FrameDecoder {
         buf.markReaderIndex();
 
         // Read the length field.
-        int length = buf.readInt();
+        int length = buf.readByte();
 
         // Make sure if there's enough bytes in the buffer.
         if (buf.readableBytes() < length) {
@@ -47,10 +47,7 @@ public class ByteHeaderFrameDecoder extends FrameDecoder {
             return null;
         }
 
-        // There's enough bytes in the buffer. Read it.
-        ChannelBuffer frame = buf.readBytes(length);
-
-        // Successfully decoded a frame.  Return the decoded frame.
-        return frame;
+        // There's enough bytes in the buffer. Read it. Return the decoded frame.
+        return buf.readBytes(length);
     }
 }

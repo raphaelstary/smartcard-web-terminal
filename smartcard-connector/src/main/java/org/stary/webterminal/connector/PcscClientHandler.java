@@ -1,7 +1,11 @@
 package org.stary.webterminal.connector;
 
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.*;
 
+import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,11 +24,19 @@ public class PcscClientHandler extends SimpleChannelUpstreamHandler {
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-        logger.info(e.getMessage().toString());
+    public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) {
+        logger.info(event.getMessage().toString());
+        ChannelBuffer buffer = (ChannelBuffer) event.getMessage();
+        try {
+            // todo send back response apdu (frame it write it back with buffer
+            ViewModel.cardChannel.transmit(new CommandAPDU(buffer.array())).getBytes();
 
-        // todo implement
-        e.getChannel().write(e.getMessage());
+        } catch (CardException e) {
+            e.printStackTrace();
+        }
+
+
+        event.getChannel().write(event.getMessage());
     }
 
     @Override

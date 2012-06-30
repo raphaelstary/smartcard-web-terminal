@@ -20,7 +20,7 @@ public class GuiPanel extends JPanel implements ActionListener {
 
     private final ViewModel model;
 
-    private JComboBox<String> readerList;
+    private JComboBox readerList;
 
     private JTextField host;
     private JTextField port;
@@ -39,7 +39,14 @@ public class GuiPanel extends JPanel implements ActionListener {
 
         GridBagConstraints constraints = new GridBagConstraints();
 
-        readerList = new JComboBox<String>((String[]) availableReader.toArray());
+//        String[] readerListValues = new String[availableReader.size()];
+//        int i = 0;
+//        for (String s: availableReader) {
+//            readerListValues[i] = s;
+//            i++;
+//        }
+
+        readerList = new JComboBox(availableReader.toArray());
         readerLabel = new JLabel(reader_lbl, JLabel.LEFT);
         readerLabel.setLabelFor(readerList);
 
