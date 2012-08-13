@@ -67,17 +67,6 @@ public final class HttpUtils {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
         response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
 
-//        StringBuilder json = new StringBuilder();
-//        json.append("{'channels' : [");
-//        int i = 0;
-//        for (Channel c : SmartCardTerminalServer.allChannels) {
-//            if (i > 0)
-//                json.append(",");
-//            json.append("{'id' : '").append(c.getId()).append("'}");
-//            i++;
-//        }
-//        json.append("]}");
-
         response.setContent(ChannelBuffers.copiedBuffer(content, CharsetUtil.UTF_8));
         HttpHeaders.setContentLength(response, content.length());
 
