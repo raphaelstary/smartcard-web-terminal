@@ -1,6 +1,7 @@
 package org.stary.webterminal.server;
 
 import org.jboss.netty.buffer.ChannelBuffers;
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.http.*;
@@ -60,5 +61,56 @@ public final class HttpUtils {
 
         Calendar time = new GregorianCalendar();
         response.setHeader(HttpHeaders.Names.DATE, formatter.format(time.getTime()));
+    }
+
+    static void sendJson(Channel channel, CharSequence content) {
+        HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
+
+//        StringBuilder json = new StringBuilder();
+//        json.append("{'channels' : [");
+//        int i = 0;
+//        for (Channel c : SmartCardTerminalServer.allChannels) {
+//            if (i > 0)
+//                json.append(",");
+//            json.append("{'id' : '").append(c.getId()).append("'}");
+//            i++;
+//        }
+//        json.append("]}");
+
+        response.setContent(ChannelBuffers.copiedBuffer(content, CharsetUtil.UTF_8));
+        HttpHeaders.setContentLength(response, content.length());
+
+        channel.write(response);
+    }
+
+    static StringBuilder jsonList(String key, String... items) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{'").append(key).append("' : [");
+
+        int i = 0;
+        for (String item: items) {
+            if (i > 0)
+                builder.append(",");
+            builder.append(item);
+            i++;
+        }
+
+        return builder.append("]}");
+    }
+
+    static StringBuilder jsonObject(KeyValuePair... keyValues) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+
+        int i = 0;
+        for (KeyValuePair keyValue: keyValues) {
+            if (i > 0)
+                builder.append(",");
+            builder.append("'").append(keyValue.key).append("':'").append(keyValue.value).append("'");
+            i++;
+        }
+
+        return builder.append("}");
     }
 }

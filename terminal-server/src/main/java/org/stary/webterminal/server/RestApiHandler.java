@@ -5,11 +5,13 @@ import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.http.*;
 import org.jboss.netty.util.CharsetUtil;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.stary.webterminal.server.HttpUtils.setContentTypeHeader;
-import static org.stary.webterminal.server.HttpUtils.setDateHeaders;
+import static org.stary.webterminal.server.HttpUtils.jsonList;
+import static org.stary.webterminal.server.HttpUtils.jsonObject;
+import static org.stary.webterminal.server.HttpUtils.sendJson;
 
 /**
  * RestApiHandler
@@ -17,22 +19,18 @@ import static org.stary.webterminal.server.HttpUtils.setDateHeaders;
 public class RestApiHandler implements BusinessLogicHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, MessageEvent event) {
-        HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
-        setDateHeaders(response);
+        List<String> jsonChannels = new ArrayList<>();
 
-        StringBuilder json = new StringBuilder();
-        json.append("{ 'channels' : [");
-        for (Channel channel : SmartCardTerminalServer.allChannels) {
-            json.append("{'channel' : '").append(channel.toString()).append("'},");
+        for (Channel channel: SmartCardTerminalServer.allChannels) {
+            jsonChannels.add(
+                    jsonObject(new KeyValuePair("id", channel.getId().toString()))
+                            .toString()
+            );
         }
-        json.append("]}");
 
-        response.setContent(ChannelBuffers.copiedBuffer(json.toString(), CharsetUtil.UTF_8));
-
-
-        Channel channel = event.getChannel();
-
-        channel.write(response);
+        sendJson(
+                event.getChannel(),
+                jsonList("channels", jsonChannels.toArray(new String[jsonChannels.size()])).toString()
+        );
     }
 }
