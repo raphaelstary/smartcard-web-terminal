@@ -8,6 +8,9 @@ import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author raphael
  */
@@ -21,7 +24,11 @@ public class HttpPipelineFactory implements ChannelPipelineFactory {
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
 
-        pipeline.addLast("handler", new HttpHandler());
+        Map<BusinessLogicHandler.Handler, BusinessLogicHandler> businessHandlers = new HashMap<>();
+        businessHandlers.put(BusinessLogicHandler.Handler.REST_API, new RestApiHandler());
+        businessHandlers.put(BusinessLogicHandler.Handler.HTTP_FILE, new HttpFileHandler());
+
+        pipeline.addLast("handler", new HttpHandler(businessHandlers));
 
         return pipeline;
     }
