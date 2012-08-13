@@ -11,7 +11,7 @@ import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 /**
  * @author raphael
  */
-public class HttpFilePipelineFactory implements ChannelPipelineFactory {
+public class HttpPipelineFactory implements ChannelPipelineFactory {
     @Override
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline = Channels.pipeline();
@@ -21,7 +21,7 @@ public class HttpFilePipelineFactory implements ChannelPipelineFactory {
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
 
-        pipeline.addLast("handler", new HttpFileHandler());
+        pipeline.addLast("handler", new HttpHandler());
 
         return pipeline;
     }

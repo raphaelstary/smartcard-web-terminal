@@ -14,7 +14,6 @@ public class ViewModel {
     public void connect(String host, String port, String readerName) {
 
         CardTerminal terminal = ViewModel.cardTerminals.getTerminal(readerName);
-        CardChannel channel;
         try {
 
             if (!terminal.isCardPresent())

@@ -20,7 +20,7 @@ import java.util.TimeZone;
 /**
  * @author raphael
  */
-public class HttpFileHandler extends SimpleChannelUpstreamHandler {
+public class HttpHandler extends SimpleChannelUpstreamHandler {
 
     private static final String APPLET_JAR = "smartcard-connector-0.1-SNAPSHOT-jar-with-dependencies.jar";
 
@@ -28,7 +28,10 @@ public class HttpFileHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws IOException {
         HttpRequest request = (HttpRequest) event.getMessage();
 
-        if (request.getMethod() != HttpMethod.GET) {
+        if (request.getUri().startsWith("/api/")) {
+            return;
+
+        } else if (request.getMethod() != HttpMethod.GET) {
             sendError(ctx, HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
