@@ -24,10 +24,15 @@ import java.util.TimeZone;
 public final class HttpUtils {
 
     static final String APPLET_JAR = "smartcard-connector-0.1-SNAPSHOT-jar-with-dependencies.jar";
+    private static final String JSON_MIME = "application/json; charset=UTF-8";
+    private static final String TEXT_MIME = "text/plain; charset=UTF-8";
+    private static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss zzz";
+    private static final String APPLET_MIME = "application/x-java-applet;version=1.7";
+    private static final String ISO_8859_1 = "ISO-8859-1";
 
     static void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, status);
-        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "text/plain; charset=UTF-8");
+        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, TEXT_MIME);
         response.setContent((ChannelBuffers.copiedBuffer("Failure: " + status.toString() + "\r\n", CharsetUtil.UTF_8)));
 
         ctx.getChannel().write(response).addListener(ChannelFutureListener.CLOSE);
@@ -39,7 +44,7 @@ public final class HttpUtils {
             sanitizedUri = URLDecoder.decode(uri, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             try {
-                sanitizedUri = URLDecoder.decode(sanitizedUri, "ISO-8859-1");
+                sanitizedUri = URLDecoder.decode(sanitizedUri, ISO_8859_1);
             } catch (UnsupportedEncodingException e1) {
                 throw new Error();
             }
@@ -51,12 +56,12 @@ public final class HttpUtils {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String type = fileNameMap.getContentTypeFor(file.getPath());
         if (type == null)
-            type = "application/x-java-applet;version=1.7";
+            type = APPLET_MIME;
         response.setHeader(HttpHeaders.Names.CONTENT_TYPE, type);
     }
 
     static void setDateHeaders(HttpResponse response) {
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN, Locale.US);
         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         Calendar time = new GregorianCalendar();
@@ -65,7 +70,7 @@ public final class HttpUtils {
 
     public static void sendJson(Channel channel, CharSequence content) {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
+        response.setHeader(HttpHeaders.Names.CONTENT_TYPE, JSON_MIME);
 
         response.setContent(ChannelBuffers.copiedBuffer(content, CharsetUtil.UTF_8));
         HttpHeaders.setContentLength(response, content.length());

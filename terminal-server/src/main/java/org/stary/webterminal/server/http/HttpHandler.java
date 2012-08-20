@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class HttpHandler extends SimpleChannelUpstreamHandler {
 
+    private static final String API = "/api";
     private final Map<BusinessLogicHandler.Handler, BusinessLogicHandler> businessHandlers;
 
     public HttpHandler(Map<BusinessLogicHandler.Handler, BusinessLogicHandler> businessHandlers) {
@@ -22,7 +23,7 @@ public class HttpHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws IOException {
         HttpRequest request = (HttpRequest) event.getMessage();
 
-        if (request.getUri().startsWith("/api/")) {
+        if (request.getUri().startsWith(API)) {
             businessHandlers.get(BusinessLogicHandler.Handler.REST_API).handleRequest(ctx, event);
             return;
         }

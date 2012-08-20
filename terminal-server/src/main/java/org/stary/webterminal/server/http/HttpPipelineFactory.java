@@ -7,8 +7,15 @@ import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
+import org.json.simple.parser.JSONParser;
+import org.stary.webterminal.server.http.api.CommandApdu;
+import org.stary.webterminal.server.http.api.PcscClient;
+import org.stary.webterminal.server.http.api.PcscClients;
+import org.stary.webterminal.server.http.api.RestApiAction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,8 +31,13 @@ public class HttpPipelineFactory implements ChannelPipelineFactory {
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
 
+        List<RestApiAction> actions = new ArrayList<>();
+        actions.add(new CommandApdu());
+        actions.add(new PcscClient());
+        actions.add(new PcscClients());
+
         Map<BusinessLogicHandler.Handler, BusinessLogicHandler> businessHandlers = new HashMap<>();
-        businessHandlers.put(BusinessLogicHandler.Handler.REST_API, new RestApiHandler());
+        businessHandlers.put(BusinessLogicHandler.Handler.REST_API, new RestApiHandler(actions, new JSONParser()));
         businessHandlers.put(BusinessLogicHandler.Handler.HTTP_FILE, new HttpFileHandler());
 
         pipeline.addLast("handler", new HttpHandler(businessHandlers));

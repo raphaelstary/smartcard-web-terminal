@@ -20,6 +20,11 @@ public class PcscClientHandler extends SimpleChannelUpstreamHandler {
     public void handleUpstream(ChannelHandlerContext ctx, ChannelEvent e) throws Exception {
         if (e instanceof ChannelStateEvent) {
             logger.info(e.toString());
+
+            ChannelStateEvent event = (ChannelStateEvent) e;
+            if (ChannelState.OPEN.equals(event.getState()) && !(Boolean)event.getValue()) {
+
+            }
         }
         super.handleUpstream(ctx, e);
     }

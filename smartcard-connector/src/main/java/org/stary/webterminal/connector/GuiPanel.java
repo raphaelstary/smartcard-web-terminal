@@ -16,6 +16,8 @@ public class GuiPanel extends JPanel implements ActionListener {
     private static final String port_lbl = "Port: ";
     private static final String connect_btn = "Connect";
     private static final String disconnect_btn = "Disconnect";
+    private static final String LOCALHOST = "localhost";
+    private static final String DEFAULT_PORT = "8088";
 
     private final ViewModel model;
 
@@ -38,13 +40,6 @@ public class GuiPanel extends JPanel implements ActionListener {
 
         GridBagConstraints constraints = new GridBagConstraints();
 
-//        String[] readerListValues = new String[availableReader.size()];
-//        int i = 0;
-//        for (String s: availableReader) {
-//            readerListValues[i] = s;
-//            i++;
-//        }
-
         readerList = new JComboBox(availableReader.toArray());
         readerLabel = new JLabel(reader_lbl, JLabel.LEFT);
         readerLabel.setLabelFor(readerList);
@@ -62,6 +57,7 @@ public class GuiPanel extends JPanel implements ActionListener {
         add(readerList, constraints);
 
         host = new JTextField(10);
+        host.setText(LOCALHOST);
         hostLabel = new JLabel(host_lbl, JLabel.LEFT);
         hostLabel.setLabelFor(host);
 
@@ -79,6 +75,7 @@ public class GuiPanel extends JPanel implements ActionListener {
         add(host, constraints);
 
         port = new JTextField(5);
+        port.setText(DEFAULT_PORT);
         portLabel = new JLabel(port_lbl, JLabel.LEFT);
         portLabel.setLabelFor(port);
 
@@ -112,14 +109,23 @@ public class GuiPanel extends JPanel implements ActionListener {
         constraints.gridx = 2;
 
         add(disconnect, constraints);
+        disconnect.setVisible(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (connect.equals(event.getSource()))
+        if (connect.equals(event.getSource())) {
             model.connect(host.getText(), port.getText(), readerList.getSelectedItem().toString());
 
-        if (disconnect.equals(event.getSource()))
+            connect.setVisible(false);
+            disconnect.setVisible(true);
+        }
+
+        if (disconnect.equals(event.getSource())) {
             model.disconnect();
+
+            disconnect.setVisible(false);
+            connect.setVisible(true);
+        }
     }
 }
