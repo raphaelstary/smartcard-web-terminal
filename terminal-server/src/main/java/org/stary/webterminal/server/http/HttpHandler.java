@@ -1,16 +1,11 @@
-package org.stary.webterminal.server;
+package org.stary.webterminal.server.http;
 
 import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.frame.TooLongFrameException;
 import org.jboss.netty.handler.codec.http.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Map;
-
-import static org.stary.webterminal.server.HttpUtils.*;
 
 /**
  * @author raphael
@@ -39,13 +34,13 @@ public class HttpHandler extends SimpleChannelUpstreamHandler {
         Channel channel = event.getChannel();
         Throwable cause = event.getCause();
         if (cause instanceof TooLongFrameException) {
-            sendError(ctx, HttpResponseStatus.BAD_REQUEST);
+            HttpUtils.sendError(ctx, HttpResponseStatus.BAD_REQUEST);
             return;
         }
 
         cause.printStackTrace();
         if (channel.isConnected()) {
-            sendError(ctx, HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            HttpUtils.sendError(ctx, HttpResponseStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

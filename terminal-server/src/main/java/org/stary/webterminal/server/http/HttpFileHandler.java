@@ -1,4 +1,4 @@
-package org.stary.webterminal.server;
+package org.stary.webterminal.server.http;
 
 import org.jboss.netty.channel.*;
 import org.jboss.netty.handler.codec.http.*;
@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-
-import static org.stary.webterminal.server.HttpUtils.*;
 
 /**
  * HttpFileHandler
@@ -20,25 +18,25 @@ public class HttpFileHandler implements BusinessLogicHandler {
         HttpRequest request = (HttpRequest) event.getMessage();
 
         if (request.getMethod() != HttpMethod.GET) {
-            sendError(ctx, HttpResponseStatus.METHOD_NOT_ALLOWED);
+            HttpUtils.sendError(ctx, HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
 
-        final String path = mapUrlToPath(sanitizeUri(request.getUri()));
+        final String path = mapUrlToPath(HttpUtils.sanitizeUri(request.getUri()));
 
         if (path == null) {
-            sendError(ctx, HttpResponseStatus.FORBIDDEN);
+            HttpUtils.sendError(ctx, HttpResponseStatus.FORBIDDEN);
             return;
         }
 
         File file = new File(path);
         if (file.isHidden() || !file.exists()) {
-            sendError(ctx, HttpResponseStatus.NOT_FOUND);
+            HttpUtils.sendError(ctx, HttpResponseStatus.NOT_FOUND);
             return;
         }
 
         if (!file.isFile()) {
-            sendError(ctx, HttpResponseStatus.FORBIDDEN);
+            HttpUtils.sendError(ctx, HttpResponseStatus.FORBIDDEN);
             return;
         }
 
@@ -46,7 +44,7 @@ public class HttpFileHandler implements BusinessLogicHandler {
         try {
             raf = new RandomAccessFile(file, "r");
         } catch (FileNotFoundException e) {
-            sendError(ctx, HttpResponseStatus.NOT_FOUND);
+            HttpUtils.sendError(ctx, HttpResponseStatus.NOT_FOUND);
             return;
         }
 
@@ -59,8 +57,8 @@ public class HttpFileHandler implements BusinessLogicHandler {
 
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
         HttpHeaders.setContentLength(response, fileLength);
-        setContentTypeHeader(response, file);
-        setDateHeaders(response);
+        HttpUtils.setContentTypeHeader(response, file);
+        HttpUtils.setDateHeaders(response);
 
         Channel channel = event.getChannel();
 
@@ -90,7 +88,7 @@ public class HttpFileHandler implements BusinessLogicHandler {
             url = "/connect.html";
 
         if ("/applet.jar".equals(url)) {
-            return System.getProperty("user.dir") + File.separator + "smartcard-connector" + File.separator + "target" + File.separator + APPLET_JAR;
+            return System.getProperty("user.dir") + File.separator + "smartcard-connector" + File.separator + "target" + File.separator + HttpUtils.APPLET_JAR;
 
         } else {
             url = url.replace('/', File.separatorChar);

@@ -1,4 +1,4 @@
-package org.stary.webterminal.server;
+package org.stary.webterminal.server.http;
 
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -63,7 +63,7 @@ public final class HttpUtils {
         response.setHeader(HttpHeaders.Names.DATE, formatter.format(time.getTime()));
     }
 
-    static void sendJson(Channel channel, CharSequence content) {
+    public static void sendJson(Channel channel, CharSequence content) {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
         response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
 
@@ -73,7 +73,7 @@ public final class HttpUtils {
         channel.write(response);
     }
 
-    static StringBuilder jsonList(String key, String... items) {
+    public static StringBuilder jsonList(String key, String... items) {
         StringBuilder builder = new StringBuilder();
         builder.append("{'").append(key).append("' : [");
 
@@ -88,7 +88,7 @@ public final class HttpUtils {
         return builder.append("]}");
     }
 
-    static StringBuilder jsonObject(KeyValuePair... keyValues) {
+    public static StringBuilder jsonObject(KeyValuePair... keyValues) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
 

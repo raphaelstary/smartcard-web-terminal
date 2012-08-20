@@ -1,4 +1,4 @@
-package org.stary.webterminal.server;
+package org.stary.webterminal.server.http;
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;

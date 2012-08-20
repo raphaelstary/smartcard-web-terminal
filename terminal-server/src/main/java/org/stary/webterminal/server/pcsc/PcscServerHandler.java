@@ -1,11 +1,11 @@
-package org.stary.webterminal.server;
+package org.stary.webterminal.server.pcsc;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.*;
+import org.stary.webterminal.server.SmartCardTerminalServer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

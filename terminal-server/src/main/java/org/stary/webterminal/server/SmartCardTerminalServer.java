@@ -6,6 +6,8 @@ import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.stary.webterminal.server.http.HttpPipelineFactory;
+import org.stary.webterminal.server.pcsc.PcscServerPipelineFactory;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -23,8 +25,8 @@ public class SmartCardTerminalServer {
 
     private static final Logger logger = Logger.getLogger(SmartCardTerminalServer.class.getName());
 
-    static final ChannelGroup allChannels = new DefaultChannelGroup("pcsc-server");
-    static final ConcurrentMap<Integer, List<String>> pcscData = new ConcurrentHashMap<Integer, List<String>>();
+    public static final ChannelGroup allChannels = new DefaultChannelGroup("pcsc-server");
+    public static final ConcurrentMap<Integer, List<String>> pcscData = new ConcurrentHashMap<Integer, List<String>>();
 
     public SmartCardTerminalServer(int httpPort, int tcpPort) {
         this.httpPort = httpPort;
