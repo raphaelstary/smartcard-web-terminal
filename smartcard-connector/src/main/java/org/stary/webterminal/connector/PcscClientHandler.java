@@ -6,7 +6,6 @@ import org.jboss.netty.channel.*;
 
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

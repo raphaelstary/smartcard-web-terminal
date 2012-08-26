@@ -34,6 +34,7 @@ public class CommandApdu extends Action implements RestApiAction {
             HttpUtils.sendError(ctx, HttpResponseStatus.NOT_IMPLEMENTED);
             return;
         }
+        @SuppressWarnings("unchecked")
         List<Long> command = (List<Long>) request.get("command");
         byte[] byteCommand = new byte[command.size()];
         int i = 0;

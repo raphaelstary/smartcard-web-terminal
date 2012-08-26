@@ -2,7 +2,6 @@ package org.stary.webterminal.server.http;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.handler.codec.http.HttpRequest;
 
 /**
  * BusinessLogicHandler

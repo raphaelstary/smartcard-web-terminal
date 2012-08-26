@@ -1,10 +1,11 @@
 package org.stary.webterminal.connector;
 
-import javax.smartcardio.*;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.TerminalFactory;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class TestSwingClient {
         JFrame frame = new JFrame("HelloWorldSwing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        List<String> terminalNames = new ArrayList<String>();
+        List<String> terminalNames = new ArrayList<>();
         try {
             for (CardTerminal terminal: ViewModel.cardTerminals.list()) {
                 terminalNames.add(terminal.getName());

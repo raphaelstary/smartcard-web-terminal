@@ -27,7 +27,7 @@ public class SmartCardTerminalServer {
     private static final Logger logger = Logger.getLogger(SmartCardTerminalServer.class.getName());
 
     public static final ChannelGroup allChannels = new DefaultChannelGroup("pcsc-server");
-    public static final ConcurrentMap<Integer, List<String>> pcscData = new ConcurrentHashMap<Integer, List<String>>();
+    public static final ConcurrentMap<Integer, List<String>> pcscData = new ConcurrentHashMap<>();
 
     public SmartCardTerminalServer(int httpPort, int tcpPort) {
         this.httpPort = httpPort;
