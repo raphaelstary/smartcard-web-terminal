@@ -1,6 +1,8 @@
 package org.stary.webterminal.connector;
 
 import javax.smartcardio.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author raphael
@@ -32,5 +34,25 @@ public class ViewModel {
 
     public void disconnect() {
         client.stop();
+    }
+
+    static void initCardTerminals() {
+        // Factory erstellen
+        TerminalFactory tf = TerminalFactory.getDefault();
+
+        // Terminals holen
+        ViewModel.cardTerminals = tf.terminals();
+    }
+
+    static List<String> getActiveCardTerminalNames() {
+        List<String> terminalNames = new ArrayList<>();
+        try {
+            for (CardTerminal terminal : ViewModel.cardTerminals.list()) {
+                terminalNames.add(terminal.getName());
+            }
+        } catch (CardException e) {
+            e.printStackTrace();
+        }
+        return terminalNames;
     }
 }

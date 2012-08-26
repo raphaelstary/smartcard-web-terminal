@@ -1,19 +1,18 @@
 package org.stary.webterminal.connector;
 
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SmartCardConnector extends JApplet {
 
-    private List<String> readerList;
-    private ViewModel model;
-    private GuiPanel view;
-
     @Override
     public void init() {
-        readerList = Arrays.asList("Reader 00", "Reader 01");
+        ViewModel.initCardTerminals();
 
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -28,9 +27,6 @@ public class SmartCardConnector extends JApplet {
     }
 
     private void createGUI() {
-        model = new ViewModel();
-        view = new GuiPanel(readerList, model);
-
-        setContentPane(view);
+        setContentPane(new GuiPanel(ViewModel.getActiveCardTerminalNames(), new ViewModel()));
     }
 }

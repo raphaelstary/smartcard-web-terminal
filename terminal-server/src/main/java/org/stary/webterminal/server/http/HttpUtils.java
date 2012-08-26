@@ -29,6 +29,8 @@ public final class HttpUtils {
     private static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss zzz";
     private static final String APPLET_MIME = "application/x-java-applet;version=1.7";
     private static final String ISO_8859_1 = "ISO-8859-1";
+    private static final String CSS_MIME = "text/css";
+    private static final String JS_MIME = "application/javascript";
 
     public static void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, status);
@@ -55,8 +57,14 @@ public final class HttpUtils {
     static void setContentTypeHeader(HttpResponse response, File file) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String type = fileNameMap.getContentTypeFor(file.getPath());
-        if (type == null)
-            type = APPLET_MIME;
+        if (type == null) {
+            if (file.getPath().endsWith(".js"))
+                type = JS_MIME;
+            else if (file.getPath().endsWith(".css"))
+                type = CSS_MIME;
+            else
+                type = APPLET_MIME;
+        }
         response.setHeader(HttpHeaders.Names.CONTENT_TYPE, type);
     }
 

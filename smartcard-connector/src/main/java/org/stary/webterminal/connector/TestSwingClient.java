@@ -17,7 +17,7 @@ public class TestSwingClient {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
 
-        setCardTerminals();
+        ViewModel.initCardTerminals();
 
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -36,27 +36,12 @@ public class TestSwingClient {
         JFrame frame = new JFrame("HelloWorldSwing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        List<String> terminalNames = new ArrayList<>();
-        try {
-            for (CardTerminal terminal: ViewModel.cardTerminals.list()) {
-                terminalNames.add(terminal.getName());
-            }
-        } catch (CardException e) {
-            e.printStackTrace();
-        }
-
-        frame.setContentPane(new GuiPanel(terminalNames, new ViewModel()));
+        frame.setContentPane(new GuiPanel(ViewModel.getActiveCardTerminalNames(), new ViewModel()));
 
         //Display the window.
         frame.pack();
         frame.setVisible(true);
     }
 
-    private static void setCardTerminals() {
-        // Factory erstellen
-        TerminalFactory tf = TerminalFactory.getDefault();
 
-        // Terminals holen
-        ViewModel.cardTerminals = tf.terminals();
-    }
 }
