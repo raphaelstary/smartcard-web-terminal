@@ -3,6 +3,7 @@ package org.stary.webterminal.server;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
+import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
@@ -51,12 +52,12 @@ public class SmartCardTerminalServer {
         logger.info("server started");
     }
 
-    public static void send(int channelId, byte[] msg) {
+    public static ChannelFuture send(int channelId, byte[] msg) {
         ChannelBuffer buffer = ChannelBuffers.buffer(msg.length+1);
         buffer.writeByte(msg.length);
         buffer.writeBytes(msg);
 
-        allChannels.find(channelId).write(buffer);
+        return allChannels.find(channelId).write(buffer);
     }
 
     public static void main(String[] args) {

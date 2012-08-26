@@ -46,17 +46,6 @@ public class PcscClient {
             future.getCause().printStackTrace();
             bootstrap.releaseExternalResources();
         }
-
-        // todo sending part
-        // Read commands from the stdin.
-//        ChannelFuture lastWriteFuture = null;
-
-        // Wait until all messages are flushed before closing the channel.
-//        if (lastWriteFuture != null) {
-//            lastWriteFuture.awaitUninterruptibly();
-//        }
-
-
     }
 
     public void stop() {

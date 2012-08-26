@@ -6,6 +6,7 @@ import org.jboss.netty.channel.MessageEvent;
 import org.json.simple.JSONObject;
 import org.stary.webterminal.server.SmartCardTerminalServer;
 import org.stary.webterminal.server.http.HttpUtils;
+import org.stary.webterminal.server.http.JsonMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class PcscClients implements RestApiAction {
     }
 
     @Override
-    public void process(MessageEvent event) {
+    public void process(ChannelHandlerContext ctx, MessageEvent event) {
 
         JSONObject channels = new JSONObject();
         for (Channel channel: SmartCardTerminalServer.allChannels) {

@@ -10,5 +10,5 @@ public interface RestApiAction {
 
     String getAction();
 
-    void process(MessageEvent event);
+    void process(ChannelHandlerContext ctx, MessageEvent event);
 }

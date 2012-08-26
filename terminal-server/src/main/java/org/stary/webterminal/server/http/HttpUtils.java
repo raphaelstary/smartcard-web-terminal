@@ -30,7 +30,7 @@ public final class HttpUtils {
     private static final String APPLET_MIME = "application/x-java-applet;version=1.7";
     private static final String ISO_8859_1 = "ISO-8859-1";
 
-    static void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
+    public static void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, status);
         response.setHeader(HttpHeaders.Names.CONTENT_TYPE, TEXT_MIME);
         response.setContent((ChannelBuffers.copiedBuffer("Failure: " + status.toString() + "\r\n", CharsetUtil.UTF_8)));
@@ -76,35 +76,5 @@ public final class HttpUtils {
         HttpHeaders.setContentLength(response, content.length());
 
         channel.write(response);
-    }
-
-    public static StringBuilder jsonList(String key, String... items) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{'").append(key).append("' : [");
-
-        int i = 0;
-        for (String item: items) {
-            if (i > 0)
-                builder.append(",");
-            builder.append(item);
-            i++;
-        }
-
-        return builder.append("]}");
-    }
-
-    public static StringBuilder jsonObject(KeyValuePair... keyValues) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-
-        int i = 0;
-        for (KeyValuePair keyValue: keyValues) {
-            if (i > 0)
-                builder.append(",");
-            builder.append("'").append(keyValue.key).append("':'").append(keyValue.value).append("'");
-            i++;
-        }
-
-        return builder.append("}");
     }
 }
