@@ -109,7 +109,9 @@
 <script src="js/sammy-latest.min.js"></script>
 <script src="js/app.js"></script>
 <script>
-    ko.applyBindings(new ConnectViewModel());
+    var viewModel = new ConnectViewModel();
+    ko.applyBindings(viewModel);
+    viewModel.init();
 </script>
 
 </body>
