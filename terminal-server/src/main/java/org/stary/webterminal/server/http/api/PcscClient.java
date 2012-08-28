@@ -38,11 +38,16 @@ public class PcscClient extends Action implements RestApiAction {
         }
 
         JSONArray response = new JSONArray();
-        if (SmartCardTerminalServer.pcscData.containsKey(requestedId))
-            response.addAll(SmartCardTerminalServer.pcscData.get(requestedId));
-        else
-            response.add("no active channel found for given id");
+        JSONObject errorResponse = new JSONObject();
 
-        HttpUtils.sendJson(event.getChannel(), response.toJSONString());
+        if (SmartCardTerminalServer.pcscData.containsKey(requestedId)) {
+            response.addAll(SmartCardTerminalServer.pcscData.get(requestedId));
+            HttpUtils.sendJson(event.getChannel(), response.toJSONString());
+
+        } else {
+            errorResponse.put("status", "error");
+            errorResponse.put("cause", "no active channel found for given id");
+            HttpUtils.sendJson(event.getChannel(), response.toJSONString());
+        }
     }
 }

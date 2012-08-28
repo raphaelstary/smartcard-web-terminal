@@ -42,6 +42,11 @@
 
 <div class="container">
 
+    <div class="alert" data-bind="visible: showAlert, css: {'alert-error': alertIsError, 'alert-success': alertIsSuccess}">
+        <button type="button" class="close" data-bind="click: resetAlert">×</button>
+        <strong data-bind="text: alertMessage">Warning!</strong>
+    </div>
+
     <h1>Send commands</h1>
 
     <p>Send command APDUs to a PC/SC reader, which is connected to a web-server.</p>
@@ -53,10 +58,10 @@
             <div class="controls">
                 <div data-bind="with: readerList">
                 <select id="readerSelection"
-                        data-bind="options: channels, value: $root.chosenReaderId, optionsText: 'id', optionsCaption: 'Choose...'">
+                        data-bind="options: channels, value: $root.chosenReader, optionsText: 'id', optionsCaption: 'Choose...'">
 
                 </select>
-                    </div>
+                </div>
             </div>
         </div>
         <div class="control-group">
@@ -66,8 +71,8 @@
         </div>
     </div>
 
-    <div class="hero-unit" data-bind="visible: showReaderArea() == true">
-        <h2 data-bind="text: chosenReaderId"></h2>
+    <div class="hero-unit" data-bind="visible: showReaderArea">
+        <h2>Reader</h2>
 
         <p data-bind="foreach: chosenReaderData">
         </p>
