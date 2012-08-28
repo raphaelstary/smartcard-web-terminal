@@ -27,10 +27,29 @@ function ConnectViewModel() {
     };
 
     self.connectToReader = function () {
-
+        $.ajax({
+            type:'POST',
+            url:'/api',
+            contentType:'application/json',
+            dataType:'json',
+            data:JSON.stringify({action:'getPcscClient', id:self.chosenReaderId()}),
+            success:function (data) {
+                self.chosenReaderData(data);
+            }
+        });
     };
 
     self.sendCommand = function () {
-
+        $.ajax({
+            type:'POST',
+            url:'/api',
+            contentType:'application/json',
+            dataType:'json',
+            data:JSON.stringify({action:'sendCommand'}),
+            success:function (data) {
+                //todo error handling
+                //todo call getPcscClient
+            }
+        });
     };
 }
