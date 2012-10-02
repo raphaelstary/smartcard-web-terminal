@@ -60,6 +60,10 @@ function ConnectViewModel() {
 
     self.sendCommand = function () {
         var commandList = self.command().split(',');
+        for (var i=0; i<commandList.length; i++) {
+            commandList[i] = parseInt(commandList[i]);
+        }
+
         alert(self.command());
         $.ajax({
             type:'POST',

@@ -17,11 +17,6 @@ public class HttpFileHandler implements BusinessLogicHandler {
     public void handleRequest(ChannelHandlerContext ctx, MessageEvent event) {
         HttpRequest request = (HttpRequest) event.getMessage();
 
-        if (request.getMethod() != HttpMethod.GET) {
-            HttpUtils.sendError(ctx, HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
-
         final String path = mapUrlToPath(HttpUtils.sanitizeUri(request.getUri()));
 
         if (path == null) {
