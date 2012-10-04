@@ -6,12 +6,8 @@ function ConnectViewModel() {
     self.commandSendingActive = false;
 
     // data
-    self.readerList = ko.observable({channels:[
-        {id:"666"},
-        {id:"667"},
-        {id:"668"}
-    ]});
-    self.chosenReader = ko.observable({id: "no reader"});
+    self.readerList = ko.observable();
+    self.chosenReader = ko.observable({id:"no reader"});
     self.chosenReaderData = ko.observable();
     self.command = ko.observable();
     self.showReaderArea = ko.observable(false);
@@ -41,7 +37,7 @@ function ConnectViewModel() {
             url:'/api',
             contentType:'application/json',
             dataType:'json',
-            data:JSON.stringify({action:'getPcscClient', id: self.chosenReader().id}),
+            data:JSON.stringify({action:'getPcscClient', id:self.chosenReader().id}),
             success:function (data) {
                 self.chosenReaderData(data);
                 if (self.commandSendingActive) {
@@ -52,7 +48,7 @@ function ConnectViewModel() {
                 }
                 self.showReaderArea(true);
             },
-            error: function () {
+            error:function () {
                 self.setAlert(self.ERROR, "Can't connect to reader");
             }
         });
@@ -60,7 +56,7 @@ function ConnectViewModel() {
 
     self.sendCommand = function () {
         var commandList = self.command().split(',');
-        for (var i=0; i<commandList.length; i++) {
+        for (var i = 0; i < commandList.length; i++) {
             commandList[i] = parseInt(commandList[i]);
         }
 
@@ -70,8 +66,8 @@ function ConnectViewModel() {
             url:'/api',
             contentType:'application/json',
             dataType:'json',
-            data:JSON.stringify({action:'sendCommandApdu', id: self.chosenReader().id, command: commandList}),
-            success: function (data) {
+            data:JSON.stringify({action:'sendCommandApdu', id:self.chosenReader().id, command:commandList}),
+            success:function (data) {
                 if (data.status === "error") {
                     self.setAlert(self.ERROR, "error from server: " + data.cause);
 
@@ -80,7 +76,7 @@ function ConnectViewModel() {
                     self.connectToReader();
                 }
             },
-            error: function() {
+            error:function () {
                 self.setAlert(self.ERROR, "error while sending command")
             }
         });
@@ -104,4 +100,16 @@ function ConnectViewModel() {
         self.alertIsSuccess(false);
         self.alertMessage(null);
     };
+
+    self.defaultSelect = function () {
+        self.command('0,-92,0,12,2,63,0');
+    };
+
+    self.defaultReadBinary = function () {
+        self.command('0,-80,-126,0,0');
+    };
+
+    self.refresh = function () {
+        self.connectToReader();
+    }
 }

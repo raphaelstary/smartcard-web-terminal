@@ -8,10 +8,12 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.stary.webterminal.server.http.HttpPipelineFactory;
+import org.stary.webterminal.server.pcsc.PcscMessage;
 import org.stary.webterminal.server.pcsc.PcscServerPipelineFactory;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
@@ -27,7 +29,7 @@ public class SmartCardTerminalServer {
     private static final Logger logger = Logger.getLogger(SmartCardTerminalServer.class.getName());
 
     public static final ChannelGroup allChannels = new DefaultChannelGroup("pcsc-server");
-    public static final ConcurrentMap<Integer, List<String>> pcscData = new ConcurrentHashMap<>();
+    public static final ConcurrentMap<Integer, List<PcscMessage>> pcscData = new ConcurrentHashMap<>();
 
     public SmartCardTerminalServer(int httpPort, int tcpPort) {
         this.httpPort = httpPort;

@@ -4,8 +4,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.*;
 import org.stary.webterminal.server.SmartCardTerminalServer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +18,7 @@ public class PcscServerHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent event) {
         SmartCardTerminalServer.allChannels.add(event.getChannel());
-        SmartCardTerminalServer.pcscData.put(event.getChannel().getId(), new ArrayList<String>());
+        SmartCardTerminalServer.pcscData.put(event.getChannel().getId(), new ArrayList<PcscMessage>());
 
         logger.info("new client connected with channel id: " + event.getChannel().getId());
     }
@@ -27,7 +26,11 @@ public class PcscServerHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) {
         ChannelBuffer buffer = (ChannelBuffer) event.getMessage();
-        SmartCardTerminalServer.pcscData.get(event.getChannel().getId()).add(Arrays.toString(buffer.array()));
+        List<Long> response = new ArrayList<>();
+        for (Byte b: buffer.array()) {
+            response.add(b.longValue());
+        }
+        SmartCardTerminalServer.pcscData.get(event.getChannel().getId()).add(new PcscMessage("reader", response));
 
         logger.info(Arrays.toString(buffer.array()));
     }

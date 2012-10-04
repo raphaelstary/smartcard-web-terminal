@@ -74,20 +74,26 @@
     <div class="hero-unit" data-bind="visible: showReaderArea">
         <h2>Reader</h2>
 
-        <p data-bind="foreach: chosenReaderData">
-        </p>
-
+        <ul data-bind="foreach: chosenReaderData" style="list-style-type: none;">
+            <li>
+                <b data-bind="text: sender"></b>: <p data-bind="text: content"></p>
+            </li>
+        </ul>
+        <br/>
 
         <div class="control-group">
             <label class="control-label" for="command">Command APDU</label>
 
             <div class="controls">
                 <textarea id="command" data-bind="value: command" rows="3"></textarea>
+                <button class="btn btn-mini" type="button" data-bind="click: defaultSelect">select</button>
+                <button class="btn btn-mini" type="button" data-bind="click: defaultReadBinary">read binary</button>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <button class="btn" data-bind="click: sendCommand">Send</button>
+                <button class="btn" data-bind="click: refresh">Refresh</button>
             </div>
         </div>
     </div>

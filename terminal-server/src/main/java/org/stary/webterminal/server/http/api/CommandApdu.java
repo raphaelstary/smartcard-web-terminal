@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.stary.webterminal.server.SmartCardTerminalServer;
 import org.stary.webterminal.server.http.HttpUtils;
 import org.stary.webterminal.server.http.JsonMapper;
+import org.stary.webterminal.server.pcsc.PcscMessage;
 
 import java.util.List;
 
@@ -34,8 +35,13 @@ public class CommandApdu extends Action implements RestApiAction {
             HttpUtils.sendError(ctx, HttpResponseStatus.NOT_IMPLEMENTED);
             return;
         }
+
+        int id = ((Long)request.get("id")).intValue();
+
         @SuppressWarnings("unchecked")
         List<Long> command = (List<Long>) request.get("command");
+        SmartCardTerminalServer.pcscData.get(id).add(new PcscMessage("you", command));
+
         byte[] byteCommand = new byte[command.size()];
         int i = 0;
         for (Long l: command) {
@@ -43,7 +49,7 @@ public class CommandApdu extends Action implements RestApiAction {
             i++;
         }
 
-        ChannelFuture future = SmartCardTerminalServer.send(((Long)request.get("id")).intValue(), byteCommand);
+        ChannelFuture future = SmartCardTerminalServer.send(id, byteCommand);
 
         future.addListener(new ChannelFutureListener() {
             @Override

@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import org.stary.webterminal.server.SmartCardTerminalServer;
 import org.stary.webterminal.server.http.HttpUtils;
 import org.stary.webterminal.server.http.JsonMapper;
+import org.stary.webterminal.server.pcsc.PcscMessage;
 
 /**
  * PcscClientAction
@@ -37,16 +38,25 @@ public class PcscClient extends Action implements RestApiAction {
             return;
         }
 
-        JSONArray response = new JSONArray();
-        JSONObject errorResponse = new JSONObject();
-
         if (SmartCardTerminalServer.pcscData.containsKey(requestedId)) {
-            response.addAll(SmartCardTerminalServer.pcscData.get(requestedId));
-            HttpUtils.sendJson(event.getChannel(), response.toJSONString());
+            JSONArray totalResponse = new JSONArray();
+
+            for (PcscMessage msg: SmartCardTerminalServer.pcscData.get(requestedId)) {
+                JSONArray content = new JSONArray();
+                content.addAll(msg.content);
+
+                JSONObject response = new JSONObject();
+                response.put("content", content);
+                response.put("sender", msg.sender);
+
+                totalResponse.add(response);
+            }
+            HttpUtils.sendJson(event.getChannel(), totalResponse.toJSONString());
 
         } else {
-            errorResponse.put("status", "error");
-            errorResponse.put("cause", "no active channel found for given id");
+            JSONObject response = new JSONObject();
+            response.put("status", "error");
+            response.put("cause", "no active channel found for given id");
             HttpUtils.sendJson(event.getChannel(), response.toJSONString());
         }
     }
