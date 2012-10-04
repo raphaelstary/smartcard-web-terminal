@@ -60,7 +60,6 @@ function ConnectViewModel() {
             commandList[i] = parseInt(commandList[i]);
         }
 
-        alert(self.command());
         $.ajax({
             type:'POST',
             url:'/api',
