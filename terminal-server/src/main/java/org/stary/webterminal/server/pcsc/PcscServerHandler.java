@@ -32,7 +32,14 @@ public class PcscServerHandler extends SimpleChannelUpstreamHandler {
         }
         SmartCardTerminalServer.pcscData.get(event.getChannel().getId()).add(new PcscMessage("reader", response));
 
-        logger.info(Arrays.toString(buffer.array()));
+        logger.info("received message from channel '" + event.getChannel().getId() + "' : " +
+                Arrays.toString(buffer.array()));
+    }
+
+    @Override
+    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent event) throws Exception {
+        SmartCardTerminalServer.pcscData.remove(event.getChannel().getId());
+        logger.info("channel was closed (id: " + event.getChannel().getId() + ")");
     }
 
     @Override

@@ -36,7 +36,14 @@ public class CommandApdu extends Action implements RestApiAction {
             return;
         }
 
-        int id = ((Long)request.get("id")).intValue();
+        int id = ((Long) request.get("id")).intValue();
+        if (!SmartCardTerminalServer.pcscData.containsKey(id)) {
+            JSONObject response = new JSONObject();
+            response.put("status", "error");
+            response.put("cause", "no active channel found for given id");
+            HttpUtils.sendJson(event.getChannel(), response.toJSONString());
+            return;
+        }
 
         @SuppressWarnings("unchecked")
         List<Long> command = (List<Long>) request.get("command");
@@ -44,7 +51,7 @@ public class CommandApdu extends Action implements RestApiAction {
 
         byte[] byteCommand = new byte[command.size()];
         int i = 0;
-        for (Long l: command) {
+        for (Long l : command) {
             byteCommand[i] = l.byteValue();
             i++;
         }

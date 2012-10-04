@@ -39,6 +39,10 @@ function ConnectViewModel() {
             dataType:'json',
             data:JSON.stringify({action:'getPcscClient', id:self.chosenReader().id}),
             success:function (data) {
+                if (data.status === "error") {
+                    self.setAlert(self.ERROR, "error from server: " + data.cause);
+                    return;
+                }
                 self.chosenReaderData(data);
                 if (self.commandSendingActive) {
                     self.setAlert(self.SUCCESS, "Command sent");
